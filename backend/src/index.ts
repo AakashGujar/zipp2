@@ -16,15 +16,15 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
-    origin: [
-      "https://zipp2.netlify.app",
-      "https://zipp2.onrender.com",
-      "http://localhost:5173",
-    ],
+    origin:
+      process.env.NODE_ENV === "production"
+        ? [
+            "https://zipp2.netlify.app",
+            "https://zipp2.onrender.com",
+            "http://localhost:5173",
+          ]
+        : ["http://localhost:3000"],
     credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    exposedHeaders: ["set-cookie"],
   })
 );
 
@@ -33,7 +33,7 @@ app.use("/url", urlRouter);
 app.use("/analytics", analyticsRouter);
 app.use("/", redirectRouter);
 
-app.get("/", (req, res) => {
+app.get("/", (_req, res) => {
   res.json({ message: "Working perfectly" });
 });
 
