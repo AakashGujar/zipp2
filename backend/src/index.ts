@@ -22,7 +22,7 @@ import cors from "cors";
   const ALLOWED_ORIGINS =
     process.env.NODE_ENV === "production"
       ? [
-          "https://zipp2.vercel.app",
+          "https://zipp2.netlify.app/",
           "https://zipp2.onrender.com",
           "https://console.cron-job.org",
         ]
