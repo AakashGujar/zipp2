@@ -1,21 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client"
-
 import React from "react";
-// import {
-//   ResponsiveContainer,
-//   BarChart,
-//   Bar,
-//   XAxis,
-//   YAxis,
-//   Cell,
-// } from "recharts";
-import { 
-  // Globe2,
-   MousePointerClick, Smartphone, MapPin } from 'lucide-react';
+import {   MousePointerClick, Smartphone, MapPin } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent } from "../components/ui/card";
 import { Progress } from "../components/ui/progress";
-// import { ChartContainer, ChartTooltip, ChartTooltipContent } from "../components/ui/chart";
 
 interface ClickDetail {
   device: string;
@@ -33,7 +20,6 @@ interface AnalyticsCardsProps {
 const AnalyticsCards: React.FC<AnalyticsCardsProps> = ({
   click_details = [],
   total_clicks = 0,
-  isLoading = false,
 }) => {
   const processClickDetails = () => {
     const metrics = {

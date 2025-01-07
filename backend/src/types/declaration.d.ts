@@ -53,7 +53,7 @@ declare module "@amplitude/ua-parser-js" {
 }
 
 declare module "pg";
-declare module "cookie-parser";
+declare module "cookie-parser"; 
 declare module "qrcode";
 declare module "cors";
 declare module "node-fetch";
