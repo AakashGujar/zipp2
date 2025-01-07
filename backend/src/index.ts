@@ -102,10 +102,17 @@ const generateTokenAndSetCookie = (userId: number, res: Response) => {
     res.cookie("jwt", token, {
       maxAge: 30 * 24 * 60 * 60 * 1000,
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? 'none' : 'lax',
-      domain: process.env.NODE_ENV === "production" ? '.onrender.com' : undefined
+      secure: true,
+      sameSite: 'lax',
+      domain: '.onrender.com'
     });
+    // res.cookie("jwt", token, {
+    //   maxAge: 30 * 24 * 60 * 60 * 1000,
+    //   httpOnly: true,
+    //   secure: process.env.NODE_ENV === "production",
+    //   sameSite: process.env.NODE_ENV === "production" ? 'none' : 'lax',
+    //   domain: process.env.NODE_ENV === "production" ? '.onrender.com' : undefined
+    // });
     return token;
   } catch (error) {
     console.log("Error in setting token:", error);

@@ -24,27 +24,8 @@ export const api = axios.create({
   withCredentials: true,
   headers: {
     "Content-Type": "application/json",
-  },
-  timeout: 20000,
-});
-
-api.interceptors.response.use(undefined, async (error) => {
-  const config = error.config;
-  
-  if ((!error.response || error.response.status === 502) && !config._retry) {
-    config._retry = true;
-    try {
-      return await api(config);
-    } catch (retryError) {
-      return Promise.reject(retryError);
-    }
   }
-  
-  return Promise.reject(error);
 });
-
-
-
 
 export const handleSignup = async (
   dispatch: AppDispatch,
