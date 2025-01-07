@@ -21,11 +21,18 @@ interface ApiErrorResponse {
 
 export const api = axios.create({
   baseURL: backendUrl,
-  withCredentials: true,
   headers: {
     "Content-Type": "application/json",
     Accept: "application/json",
   },
+});
+
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
 });
 
 export const handleSignup = async (
@@ -34,7 +41,12 @@ export const handleSignup = async (
 ): Promise<void> => {
   try {
     const response = await api.post(`/auth/signup`, data);
-    dispatch(signup({ user: response.data.data }));
+    dispatch(
+      signup({
+        user: response.data.data,
+        token: response.data.token,
+      })
+    );
   } catch (error) {
     const err = error as AxiosError<ApiErrorResponse>;
     toast.error(err.response?.data?.message || "Signup failed");
@@ -47,12 +59,33 @@ export const handleLogin = async (
 ): Promise<User | void> => {
   try {
     const response = await api.post("/auth/signin", data);
-    dispatch(login({ user: response.data.user, token: response.data.token }));
+    dispatch(
+      login({
+        user: response.data.user,
+        token: response.data.token,
+      })
+    );
     return response.data.user;
   } catch (error) {
     const err = error as AxiosError<ApiErrorResponse>;
     toast.error(err.response?.data?.message || "Login failed");
   }
+};
+
+export const handleLogout = () => {
+  return async (dispatch: AppDispatch) => {
+    dispatch(setLoading(true));
+    try {
+      await api.get("/auth/logout");
+      dispatch(logout());
+      toast.success("Logged out successfully");
+    } catch (error) {
+      const err = error as AxiosError<ApiErrorResponse>;
+      toast.error(err.response?.data?.message || "Failed to logout");
+    } finally {
+      dispatch(setLoading(false));
+    }
+  };
 };
 
 export const handleFetchAnalytics = (urlId: string) => {
@@ -152,25 +185,6 @@ export const handleSearchUrls = (query: string) => {
     }
   };
 };
-
-export const handleLogout = () => {
-  return async (dispatch: AppDispatch) => {
-    dispatch(setLoading(true));
-    try {
-      await api.get("/auth/logout");
-      document.cookie =
-        "jwt=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; secure; samesite=strict";
-      dispatch(logout());
-      toast.success("Logged out successfully");
-    } catch (error) {
-      const err = error as AxiosError<ApiErrorResponse>;
-      toast.error(err.response?.data?.message || "Failed to logout");
-    } finally {
-      dispatch(setLoading(false));
-    }
-  };
-};
-
 // export const handleLogout = async () => {
 //   try {
 //     await api.get('/auth/logout');

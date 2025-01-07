@@ -1,22 +1,16 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 
-export const generateTokenAndSetCookie = (userId: number, res: Response) => {
+export const generateToken = (userId: number) => {
   try {
     const jwtSecret = process.env.JWT_SECRET;
     const token = jwt.sign({ id: userId }, jwtSecret as string, {
       expiresIn: "15d",
     });
-    res.cookie("jwt", token, {
-      maxAge: 30 * 24 * 60 * 60 * 1000,
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-      path: "/",
-    });
     return token;
   } catch (error) {
-    console.log("Error in setting token:", error);
+    console.log("Error generating token:", error);
+    throw error;
   }
 };
 
@@ -31,11 +25,14 @@ export const verifyToken = async (
 ): Promise<void> => {
   try {
     const jwtSecret = process.env.JWT_SECRET;
-    const token = req.cookies?.jwt;
-    if (!token) {
+    const authHeader = req.headers.authorization;
+    
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
       res.status(401).json({ message: "Unauthorized - No token provided" });
       return;
     }
+
+    const token = authHeader.split(' ')[1];
     const decoded = jwt.verify(token, jwtSecret as string) as JwtPayload;
     req.userId = { id: decoded.id };
     next();

@@ -1,20 +1,14 @@
 import bcrypt from "bcrypt";
 import { Router, Request, Response } from "express";
 import { pgClient } from "../db/connectToDb";
-import {
-  generateTokenAndSetCookie,
-  verifyToken,
-} from "../handlers/createAndVerifyToken";
+import { generateToken, verifyToken } from "../handlers/createAndVerifyToken";
 import { LoginSchema, UserSchema } from "../schema/authSchema";
 import { queries } from "../queries/queries";
 import { validateRequest } from "../schema/validateSchema";
 
 const router = Router();
 
-router.post(
-  "/signup",
-  validateRequest(UserSchema),
-  async (req: Request, res: Response): Promise<void> => {
+router.post("/signup",validateRequest(UserSchema),async (req: Request, res: Response): Promise<void> => {
     const client = await pgClient.connect();
     try {
       const { name, email, password } = req.body;
@@ -34,7 +28,7 @@ router.post(
         hashedPassword,
       ]);
 
-      const token = generateTokenAndSetCookie(insertResponse.rows[0].id, res);
+      const token = generateToken(insertResponse.rows[0].id);
       res.status(201).json({
         message: "User created successfully",
         data: insertResponse.rows[0],
@@ -49,10 +43,7 @@ router.post(
   }
 );
 
-router.post(
-  "/signin",
-  validateRequest(LoginSchema),
-  async (req: Request, res: Response): Promise<void> => {
+router.post("/signin",validateRequest(LoginSchema),async (req: Request, res: Response): Promise<void> => {
     const client = await pgClient.connect();
     try {
       const { email, password } = req.body;
@@ -72,7 +63,7 @@ router.post(
       }
 
       try {
-        const token = generateTokenAndSetCookie(user.id, res);
+        const token = generateToken(user.id);
         res.json({
           message: "Login successful",
           user: { id: user.id, name: user.name, email: user.email },
@@ -97,25 +88,10 @@ router.post(
 );
 
 router.get("/logout", async (req, res): Promise<void> => {
-  try {
-    res.cookie("jwt", "", {
-      maxAge: 0,
-      secure: true,
-      httpOnly: true,
-      path: "/",
-      sameSite: "strict",
-    });
-    res.json({ message: "Logged out successfully" });
-  } catch (error) {
-    console.log("Logout error:", error);
-    res.status(500).json({ message: "Error while logging out" });
-  }
+  res.json({ message: "Logged out successfully" });
 });
 
-router.get(
-  "/verify",
-  verifyToken,
-  async (req: Request, res: Response): Promise<void> => {
+router.get("/verify",verifyToken,async (req: Request, res: Response): Promise<void> => {
     const client = await pgClient.connect();
     try {
       const userId = req.userId?.id;

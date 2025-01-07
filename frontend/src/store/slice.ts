@@ -8,10 +8,13 @@ import {
   Url,
 } from "../types/utils";
 
+const token = localStorage.getItem("token");
+const user = localStorage.getItem("user");
+
 const initialAuthState: AuthState = {
-  isLoggedIn: false,
-  user: null,
-  token: null,
+  isLoggedIn: !!token,
+  user: user ? JSON.parse(user) : null,
+  token: token || null,
 };
 
 const initialAnalyticsState: AnalyticsState = {
@@ -30,17 +33,26 @@ const authSlice = createSlice({
   name: "auth",
   initialState: initialAuthState,
   reducers: {
-    login: (state, action: PayloadAction<{ user: User; token?: string }>) => {
+    login: (state, action: PayloadAction<{ user: User; token: string }>) => {
       state.isLoggedIn = true;
       state.user = action.payload.user;
+      state.token = action.payload.token;
+      localStorage.setItem("token", action.payload.token);
+      localStorage.setItem("user", JSON.stringify(action.payload.user));
     },
-    signup: (state, action: PayloadAction<{ user: User }>) => {
+    signup: (state, action: PayloadAction<{ user: User; token: string }>) => {
       state.isLoggedIn = true;
       state.user = action.payload.user;
+      state.token = action.payload.token;
+      localStorage.setItem("token", action.payload.token);
+      localStorage.setItem("user", JSON.stringify(action.payload.user));
     },
     logout: (state) => {
       state.isLoggedIn = false;
       state.user = null;
+      state.token = null;
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
     },
   },
 });
