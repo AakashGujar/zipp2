@@ -15,29 +15,29 @@ import QRCode from "qrcode";
 import UAParser from "@amplitude/ua-parser-js";
 import cors from "cors";
 
-  const app = express();
-  app.use(express.json());
-  app.use(cookieParser());
-  const ALLOWED_ORIGINS =
-    process.env.NODE_ENV === "production"
-      ? [
-          "https://zipp2.netlify.app",
-          "https://zipp2.onrender.com",
-          "https://console.cron-job.org",
-        ]
-      : ["http://localhost:5173"];
-  const corsOptions = {
-    origin: ALLOWED_ORIGINS,
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization", "Cookie"],
-    exposedHeaders: ["Set-Cookie"],
-  };
-  app.use(cors(corsOptions));
-  app.options("*", cors(corsOptions));
-  app.use(cookieParser());
-  dotenv.config();
-  const port = process.env.PORT || 3000;
+const app = express();
+app.use(express.json());
+app.use(cookieParser());
+const ALLOWED_ORIGINS =
+  process.env.NODE_ENV === "production"
+    ? [
+        "https://zipp2.netlify.app",
+        "https://zipp2.onrender.com",
+        "https://console.cron-job.org",
+      ]
+    : ["http://localhost:5173"];
+const corsOptions = {
+  origin: ALLOWED_ORIGINS,
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "Cookie"],
+  exposedHeaders: ["Set-Cookie"],
+};
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
+app.use(cookieParser());
+dotenv.config();
+const port = process.env.PORT || 3000;
 
 const createTableQuery = `
   CREATE TABLE IF NOT EXISTS users (
@@ -103,7 +103,8 @@ const generateTokenAndSetCookie = (userId: number, res: Response) => {
       maxAge: 30 * 24 * 60 * 60 * 1000,
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: true,
+      sameSite: process.env.NODE_ENV === "production" ? 'none' : 'lax',
+      domain: process.env.NODE_ENV === "production" ? '.onrender.com' : undefined
     });
     return token;
   } catch (error) {
@@ -517,30 +518,37 @@ app.get("/test/user-info", async (req, res) => {
   }
 });
 
-app.get("/auth/verify", verifyToken, async (req: Request, res: Response): Promise<void> => {
-  const client = await pgClient.connect();
-  try {
-    const userId = req.userId?.id;
-    if (!userId) {
-      res.status(401).json({ message: "User not authenticated" });
-      return;
+app.get(
+  "/auth/verify",
+  verifyToken,
+  async (req: Request, res: Response): Promise<void> => {
+    const client = await pgClient.connect();
+    try {
+      const userId = req.userId?.id;
+      if (!userId) {
+        res.status(401).json({ message: "User not authenticated" });
+        return;
+      }
+      const userResult = await client.query(
+        "SELECT id, name, email FROM users WHERE id = $1",
+        [userId]
+      );
+      if (userResult.rows.length === 0) {
+        res.status(401).json({ message: "User not found" });
+        return;
+      }
+      res.json({
+        message: "Token verified successfully",
+        user: userResult.rows[0],
+      });
+    } catch (error) {
+      console.log("Verification error:", error);
+      res.status(500).json({ message: "Error during verification" });
+    } finally {
+      client.release();
     }
-    const userResult = await client.query('SELECT id, name, email FROM users WHERE id = $1', [userId]);
-    if (userResult.rows.length === 0) {
-      res.status(401).json({ message: "User not found" });
-      return;
-    }
-    res.json({
-      message: "Token verified successfully",
-      user: userResult.rows[0]
-    });
-  } catch (error) {
-    console.log("Verification error:", error);
-    res.status(500).json({ message: "Error during verification" });
-  } finally {
-    client.release();
   }
-});
+);
 
 app.get("/", (req, res) => {
   res.status(200).json({ status: "OK", message: "Service is working" });

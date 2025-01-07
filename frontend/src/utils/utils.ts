@@ -2,7 +2,6 @@ import { faqsType, featureTypes, Testimonials } from "../types/utils";
 import { Zap, BarChart, Link2, FileCode, QrCode, Lock } from "lucide-react";
 
 export const backendUrl = "https://zipp2.onrender.com";
-// export const backendUrl = "http://localhost:3000";
 
 export const faqs: faqsType[] = [
   {
