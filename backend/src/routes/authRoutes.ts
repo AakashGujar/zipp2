@@ -11,7 +11,10 @@ import { validateRequest } from "../schema/validateSchema";
 
 const router = Router();
 
-router.post("/signup",validateRequest(UserSchema),async (req: Request, res: Response): Promise<void> => {
+router.post(
+  "/signup",
+  validateRequest(UserSchema),
+  async (req: Request, res: Response): Promise<void> => {
     const client = await pgClient.connect();
     try {
       const { name, email, password } = req.body;
@@ -95,7 +98,13 @@ router.post(
 
 router.get("/logout", async (req, res): Promise<void> => {
   try {
-    res.cookie("jwt", "", { maxAge: 0 });
+    res.cookie("jwt", "", {
+      maxAge: 0,
+      secure: true,
+      httpOnly: true,
+      path: "/",
+      sameSite: "strict",
+    });
     res.json({ message: "Logged out successfully" });
   } catch (error) {
     console.log("Logout error:", error);
