@@ -5,7 +5,7 @@ import UAParser from "@amplitude/ua-parser-js";
 
 const router = Router();
 
-router.get("/:shortUrl", async (req: Request, res: Response): Promise<void> => {
+router.get("/z/:shortUrl", async (req: Request, res: Response): Promise<void> => {
   const client = await pgClient.connect();
   try {
     const { shortUrl } = req.params;

@@ -79,7 +79,7 @@ export function Dashboard() {
 
   const handleRedirectFunc = async (shortUrl: string) => {
     try {
-      const response = await axios.get(`${backendUrl}/${shortUrl}`);
+      const response = await axios.get(`${backendUrl}/z/${shortUrl}`);
       if (response.data.success) {
         let urlToRedirect = response.data.data.originalUrl;
         if (

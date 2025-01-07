@@ -14,6 +14,16 @@
   "description": "",
   "dependencies": {
     "@amplitude/ua-parser-js": "^0.7.33",
+    "@types/bcrypt": "^5.0.2",
+    "@types/cookie-parser": "^1.4.8",
+    "@types/cors": "^2.8.17",
+    "@types/dotenv": "^8.2.3",
+    "@types/express": "^5.0.0",
+    "@types/geoip-lite": "^1.4.4",
+    "@types/jsonwebtoken": "^9.0.7",
+    "@types/node": "^22.10.5",
+    "@types/pg": "^8.11.10",
+    "@types/qrcode": "^1.5.5",
     "bcrypt": "^5.1.1",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
@@ -24,16 +34,9 @@
     "pg": "^8.13.1",
     "qrcode": "^1.5.4",
     "typescript": "^5.7.2",
-    "zod": "^3.24.1",
-    "@types/bcrypt": "^5.0.2",
-    "@types/cookie-parser": "^1.4.8",
-    "@types/cors": "^2.8.17",
-    "@types/dotenv": "^8.2.3",
-    "@types/express": "^5.0.0",
-    "@types/geoip-lite": "^1.4.4",
-    "@types/jsonwebtoken": "^9.0.7",
-    "@types/node": "^22.10.5",
-    "@types/pg": "^8.11.10",
-    "@types/qrcode": "^1.5.5"
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@types/node-fetch": "^2.6.12"
   }
 }

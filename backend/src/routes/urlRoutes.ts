@@ -24,7 +24,7 @@ router.post(
       }
 
       const shortUrl = randomBytes(3).toString("hex");
-      const fullShortUrl = `${process.env.PRODUCTION_URL}/${shortUrl}`;
+      const fullShortUrl = `${process.env.PRODUCTION_URL}/z/${shortUrl}`;
 
       const generateQrCode = async (url: string): Promise<string> => {
         try {

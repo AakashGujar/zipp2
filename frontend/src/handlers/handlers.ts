@@ -109,7 +109,7 @@ export const handleRedirect = (shortUrl: string) => {
   return async (dispatch: AppDispatch) => {
     dispatch(setLoading(true));
     try {
-      const response = await api.get(`/${shortUrl}`);
+      const response = await api.get(`/z/${shortUrl}`);
       window.location.href = response.data.data.originalUrl;
     } catch (error) {
       const err = error as AxiosError<ApiErrorResponse>;
