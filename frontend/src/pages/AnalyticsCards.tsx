@@ -1,18 +1,21 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client"
 
 import React from "react";
-import {
-  ResponsiveContainer,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Cell,
-} from "recharts";
-import { Globe2, MousePointerClick, Smartphone, MapPin } from 'lucide-react';
+// import {
+//   ResponsiveContainer,
+//   BarChart,
+//   Bar,
+//   XAxis,
+//   YAxis,
+//   Cell,
+// } from "recharts";
+import { 
+  // Globe2,
+   MousePointerClick, Smartphone, MapPin } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent } from "../components/ui/card";
 import { Progress } from "../components/ui/progress";
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "../components/ui/chart";
+// import { ChartContainer, ChartTooltip, ChartTooltipContent } from "../components/ui/chart";
 
 interface ClickDetail {
   device: string;
@@ -63,14 +66,14 @@ const AnalyticsCards: React.FC<AnalyticsCardsProps> = ({
 
   const metrics = processClickDetails();
 
-  const countryChartData = Object.entries(metrics.countries)
-    .map(([name, value]) => ({ name, value }))
-    .sort((a, b) => b.value - a.value)
-    .slice(0, 5);
+  // const countryChartData = Object.entries(metrics.countries)
+  //   .map(([name, value]) => ({ name, value }))
+  //   .sort((a, b) => b.value - a.value)
+  //   .slice(0, 5);
 
-  if (isLoading) {
-    return <div className="text-center p-4">Loading analytics...</div>;
-  }
+  // if (isLoading) {
+  //   return <div className="text-center p-4">Loading analytics...</div>;
+  // }
 
   const MetricList: React.FC<{ data: Record<string, number>; title: string }> = ({ data, title }) => {
     const entries = Object.entries(data);
@@ -101,7 +104,7 @@ const AnalyticsCards: React.FC<AnalyticsCardsProps> = ({
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <Card>
+      {/* <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Globe2 className="h-5 w-5" />
@@ -132,7 +135,7 @@ const AnalyticsCards: React.FC<AnalyticsCardsProps> = ({
             </ResponsiveContainer>
           </ChartContainer>
         </CardContent>
-      </Card>
+      </Card> */}
 
       <Card>
         <CardHeader>

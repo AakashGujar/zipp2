@@ -21,7 +21,7 @@ app.use(cookieParser());
 const ALLOWED_ORIGINS = [
   "https://zipp2.netlify.app",
   "https://zipp2.onrender.com",
-  "https://console.cron-job.org"
+  "https://console.cron-job.org",
 ];
 const corsOptions = {
   origin: (
@@ -139,12 +139,14 @@ const verifyToken = async (
     const token = req.cookies?.jwt;
     if (!token) {
       res.status(401).json({ message: "Unauthorized No token provided" });
+      return;
     }
     const decoded = jwt.verify(token, jwtSecret as string) as JwtPayload;
     req.userId = { id: decoded.id };
     next();
   } catch (error) {
     res.status(401).json({ message: "Unauthorized - Invalid token" });
+    return;
   }
 };
 
