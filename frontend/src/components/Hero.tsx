@@ -84,7 +84,7 @@ export function Hero() {
               style={{
                 background:
                   "radial-gradient(circle at center, currentColor 2px, transparent 2px)",
-                backgroundSize: "8px 8px",
+                backgroundSize: "50% 50%",
               }}
             />
           </motion.h1>
