@@ -18,17 +18,22 @@ import cors from "cors";
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
-const ALLOWED_ORIGINS =
-  process.env.NODE_ENV === "production"
-    ? [
-        "https://zipp2.netlify.app",
-        "https://zipp2.onrender.com",
-        "https://console.cron-job.org",
-      ]
-    : ["http://localhost:5173"];
-
+const ALLOWED_ORIGINS = [
+  "https://zipp2.netlify.app",
+  "https://zipp2.onrender.com",
+  "https://console.cron-job.org"
+];
 const corsOptions = {
-  origin: ALLOWED_ORIGINS,
+  origin: (
+    origin: string | undefined,
+    callback: (err: Error | null, allow?: boolean) => void
+  ) => {
+    if (!origin || ALLOWED_ORIGINS.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization", "Cookie"],
@@ -103,9 +108,9 @@ const generateTokenAndSetCookie = (userId: number, res: Response) => {
     res.cookie("jwt", token, {
       maxAge: 30 * 24 * 60 * 60 * 1000,
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-      domain: ".onrender.com",
+      secure: true,
+      sameSite: "none",
+      // domain: ".onrender.com",
     });
     // res.cookie("jwt", token, {
     //   maxAge: 30 * 24 * 60 * 60 * 1000,
