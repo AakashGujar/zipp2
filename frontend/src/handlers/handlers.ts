@@ -153,19 +153,42 @@ export const handleSearchUrls = (query: string) => {
   };
 };
 
-export const handleLogout = () => {
-  return async (dispatch: AppDispatch) => {
-    dispatch(setLoading(true));
-    try {
-      await api.get("/auth/logout");
-      document.cookie = "jwt=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-      dispatch(logout());
-      toast.success("Logged out successfully");
-    } catch (error) {
-      const err = error as AxiosError<ApiErrorResponse>;
-      toast.error(err.response?.data?.message || "Failed to logout");
-    } finally {
-      dispatch(setLoading(false));
-    }
-  };
+// export const handleLogout = () => {
+//   return async (dispatch: AppDispatch) => {
+//     dispatch(setLoading(true));
+//     try {
+//       await api.get("/auth/logout");
+//       document.cookie = "jwt=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; secure; samesite=strict";
+//       dispatch(logout());
+//       toast.success("Logged out successfully");
+//     } catch (error) {
+//       const err = error as AxiosError<ApiErrorResponse>;
+//       toast.error(err.response?.data?.message || "Failed to logout");
+//     } finally {
+//       dispatch(setLoading(false));
+//     }
+//   };
+// };
+
+// export const handleLogout = async () => {
+//   try {
+//     await api.get('/auth/logout');
+//     document.cookie = "jwt=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; secure; samesite=strict";
+//     dispatch(logout());
+//   } catch (error) {
+//     console.error("Logout failed:", error);
+//   }
+// };
+
+export const handleLogout = async (dispatch: AppDispatch): Promise<void> => {
+  try {
+    await api.get("/auth/logout");
+    document.cookie =
+      "jwt=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; secure; samesite=strict";
+    dispatch(logout());
+    toast.success("Logged out successfully");
+  } catch (error) {
+    const err = error as AxiosError<ApiErrorResponse>;
+    toast.error(err.response?.data?.message || "Failed to logout");
+  }
 };
