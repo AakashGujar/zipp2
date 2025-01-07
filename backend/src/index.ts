@@ -30,7 +30,12 @@ const corsOptions = {
   origin: ALLOWED_ORIGINS,
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization", "Cookie"],
+  allowedHeaders: [
+    // "Access—Control—Allow—Origin",
+    "Content-Type",
+    "Authorization",
+    "Cookie",
+  ],
   exposedHeaders: ["Set-Cookie"],
 };
 app.use(cors(corsOptions));
@@ -102,9 +107,9 @@ const generateTokenAndSetCookie = (userId: number, res: Response) => {
     res.cookie("jwt", token, {
       maxAge: 30 * 24 * 60 * 60 * 1000,
       httpOnly: true,
-      secure: true,
-      sameSite: 'lax',
-      domain: '.onrender.com'
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      domain: ".onrender.com",
     });
     // res.cookie("jwt", token, {
     //   maxAge: 30 * 24 * 60 * 60 * 1000,

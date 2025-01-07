@@ -24,6 +24,8 @@ export const api = axios.create({
   withCredentials: true,
   headers: {
     "Content-Type": "application/json",
+    Accept:"application/json",
+    "Access-Control-Allow-Origin":'https://zipp2.onrender.com',
   }
 });
 
