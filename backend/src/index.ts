@@ -18,29 +18,20 @@ import cors from "cors";
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
-const ALLOWED_ORIGINS = [
-  "https://zipp2.netlify.app",
-  "https://zipp2.onrender.com",
-  "https://console.cron-job.org",
-];
-const corsOptions = {
-  origin: (
-    origin: string | undefined,
-    callback: (err: Error | null, allow?: boolean) => void
-  ) => {
-    if (!origin || ALLOWED_ORIGINS.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-  credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization", "Cookie"],
-  exposedHeaders: ["Set-Cookie"],
-};
-app.use(cors(corsOptions));
-app.options("*", cors(corsOptions));
+
+app.use(
+  cors({
+    origin: ["https://zipp2.netlify.app", "https://zipp2.onrender.com"],
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    exposedHeaders: ["set-cookie"],
+  })
+);
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Credentials', 'true');
+  next();
+});
 app.use(cookieParser());
 dotenv.config();
 const port = process.env.PORT || 3000;
@@ -110,6 +101,7 @@ const generateTokenAndSetCookie = (userId: number, res: Response) => {
       httpOnly: true,
       secure: true,
       sameSite: "none",
+      path: "/",
       // domain: ".onrender.com",
     });
     // res.cookie("jwt", token, {
